@@ -1,5 +1,6 @@
 package com.example.identity_service.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -15,7 +16,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private String userId;
+    private int userId;
 
     @Column(nullable = false, unique = true, length = 50)
     private String username;
