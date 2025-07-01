@@ -1,24 +1,22 @@
-package com.example.identity_service.dto.request;
+package com.example.identity_service.dto.response;
 
-
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserUpdateRequest {
-    @Email
+public class UserResponse {
+    private int userId;
+    private String username;
     private String email;
-    @Size(min = 8, message = "INVALID_PASSWORD")
     private String password;
-    @NotBlank
     private String fullName;
-    private String dob;
+    private LocalDate dob;
 }
