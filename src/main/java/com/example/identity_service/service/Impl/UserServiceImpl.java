@@ -4,6 +4,7 @@ import com.example.identity_service.dto.request.UserRequestDTO;
 import com.example.identity_service.dto.request.UserUpdateRequest;
 import com.example.identity_service.dto.response.UserResponse;
 import com.example.identity_service.entity.User;
+import com.example.identity_service.enums.Role;
 import com.example.identity_service.exception.AppException;
 import com.example.identity_service.exception.ErrorCode;
 import com.example.identity_service.mapper.UserMapper;
@@ -13,12 +14,15 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -36,12 +40,19 @@ public class UserServiceImpl implements UserService {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
         User user = userMapper.toUser(userRequestDTO);
+
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.STUDENT.name());
+        user.setRoles(roles);
+
         return userRepository.save(user);
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getAllUsers() {
 
         return userMapper.toUsersResponse(userRepository.findAll());
@@ -68,4 +79,15 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(int userId) {
         userRepository.deleteById(userId);
     }
+
+    @Override
+    public UserResponse getInfoUserIndex(){
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUsername(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+
+        return userMapper.toUserResponse(user);
+    }
+
 }
