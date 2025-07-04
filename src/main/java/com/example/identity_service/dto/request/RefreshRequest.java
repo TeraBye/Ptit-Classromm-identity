@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AuthRequest {
-    private String username;
-    private String password;
+public class RefreshRequest {
+    private String token;
 }

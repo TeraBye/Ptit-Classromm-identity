@@ -1,14 +1,14 @@
 package com.example.identity_service.mapper;
 
+import java.util.List;
+
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+
 import com.example.identity_service.dto.request.UserRequestDTO;
 import com.example.identity_service.dto.request.UserUpdateRequest;
 import com.example.identity_service.dto.response.UserResponse;
 import com.example.identity_service.entity.User;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -20,6 +20,4 @@ public interface UserMapper {
     List<UserResponse> toUsersResponse(List<User> users);
 
     void updateUser(@MappingTarget User user, UserUpdateRequest userUpdateRequest);
-
-
 }
